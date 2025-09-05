@@ -59,11 +59,13 @@ export const mallApi = {
   // 获取商场列表
   getMalls: (params?: any) => api.get('/map/malls', { params }),
   // 创建商场
-  createMall: (data: any) => api.post('/admin/malls', data),
+  createMall: (data: any) => api.post('/mall', data),
   // 更新商场
-  updateMall: (id: string, data: any) => api.put(`/admin/malls/${id}`, data),
+  updateMall: (id: string, data: any) => api.put(`/mall/${id}`, data),
   // 删除商场
-  deleteMall: (id: string) => api.delete(`/admin/malls/${id}`),
+  deleteMall: (id: string) => api.delete(`/mall/${id}`),
+  // 获取商场品牌列表
+  getMallBrands: (mallId: string, params?: any) => api.get(`/mall/${mallId}/brands`, { params }),
 };
 
 // 用户相关API
@@ -93,4 +95,22 @@ export const statisticsApi = {
   getNationalData: () => api.get('/map/national'),
   // 获取统计数据
   getStatistics: (params?: any) => api.get('/map/statistics', { params }),
-}; 
+};
+
+// 字典相关API
+export const dictionaryApi = {
+  // 获取字典列表
+  getDictionaries: (params?: any) => api.get('/admin/dictionaries', { params }),
+  // 获取字典类型列表
+  getDictionaryTypes: () => api.get('/admin/dictionaries/types'),
+  // 创建字典
+  createDictionary: (data: any) => api.post('/admin/dictionaries', data),
+  // 更新字典
+  updateDictionary: (id: string, data: any) => api.put(`/admin/dictionaries/${id}`, data),
+  // 删除字典
+  deleteDictionary: (id: string) => api.delete(`/admin/dictionaries/${id}`),
+  // 批量排序
+  sortDictionaries: (data: any) => api.put('/admin/dictionaries/sort', data),
+  // 前端查询字典
+  queryDictionaries: (params?: any) => api.get('/map/dictionaries', { params }),
+};

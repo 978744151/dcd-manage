@@ -11,6 +11,7 @@ import {
   UserOutlined,
   LogoutOutlined,
   SettingOutlined,
+  BookOutlined,
 } from '@ant-design/icons';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
@@ -62,6 +63,16 @@ const Layout: React.FC = () => {
       label: '商场管理',
     },
     {
+      key: '/mall-brands',
+      icon: <ShopOutlined />,
+      label: '商场品牌管理',
+    },
+    {
+      key: '/dictionaries',
+      icon: <BankOutlined />,
+      label: '字典管理',
+    },
+    {
       key: '/users',
       icon: <UserOutlined />,
       label: '用户管理',
@@ -101,9 +112,9 @@ const Layout: React.FC = () => {
 
   return (
     <AntLayout className="app-layout">
-      <Sider 
-        trigger={null} 
-        collapsible 
+      <Sider
+        trigger={null}
+        collapsible
         collapsed={collapsed}
         className="app-sider"
       >
@@ -119,7 +130,7 @@ const Layout: React.FC = () => {
           className="app-menu"
         />
       </Sider>
-      
+
       <AntLayout>
         <Header className="app-header">
           <div className="header-left">
@@ -130,7 +141,7 @@ const Layout: React.FC = () => {
               className="trigger-button"
             />
           </div>
-          
+
           <div className="header-right">
             <Dropdown
               menu={{ items: userMenuItems }}
@@ -149,7 +160,7 @@ const Layout: React.FC = () => {
             </Dropdown>
           </div>
         </Header>
-        
+
         <Content className="app-content">
           <div className="content-wrapper">
             <Outlet />
@@ -160,4 +171,4 @@ const Layout: React.FC = () => {
   );
 };
 
-export default Layout; 
+export default Layout;

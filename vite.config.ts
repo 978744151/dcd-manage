@@ -9,7 +9,7 @@ export default defineConfig({
 		open: true,
 		proxy: {
 			'/api': {
-				target: 'http://8.155.53.210:3000',
+				target: 'http://localhost:5002',
 				changeOrigin: true,
 				ws: false,
 			},
@@ -18,5 +18,8 @@ export default defineConfig({
 	preview: {
 		port: 5173,
 		open: true,
+	},
+	build: {
+		outDir: 'build',
 	},
 });

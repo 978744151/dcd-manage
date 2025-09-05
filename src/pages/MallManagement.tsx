@@ -16,7 +16,7 @@ import {
   Col,
   InputNumber,
 } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons';
 import { mallApi, provinceApi, cityApi, districtApi } from '../services/api';
 
 const { Title } = Typography;
@@ -61,17 +61,47 @@ const MallManagement: React.FC = () => {
   const [editingMall, setEditingMall] = useState<Mall | null>(null);
   const [form] = Form.useForm();
 
-  useEffect(() => {
-    fetchMalls();
-    fetchProvinces();
+  // 添加查询和分页状态
+  const [mallFilters, setMallFilters] = useState({
+    search: '',
+    provinceId: undefined as string | undefined,
+    cityId: undefined as string | undefined,
+    districtId: undefined as string | undefined
+  });
+  const [pagination, setPagination] = useState({
+    page: 1,
+    limit: 10,
+    total: 0
+  });
 
+  useEffect(() => {
+    fetchMalls(1, 10);
+    fetchProvinces();
   }, []);
 
-  const fetchMalls = async () => {
+  // 当查询条件变化时重新获取数据
+  useEffect(() => {
+    fetchMalls(1, pagination.limit);
+  }, [mallFilters]);
+
+  const fetchMalls = async (page: number, limit: number) => {
     try {
       setLoading(true);
-      const response = await mallApi.getMalls();
+      const params = {
+        page,
+        limit,
+        search: mallFilters.search || undefined,
+        provinceId: mallFilters.provinceId || undefined,
+        cityId: mallFilters.cityId || undefined,
+        districtId: mallFilters.districtId || undefined
+      };
+      const response = await mallApi.getMalls(params);
       setMalls(response.data.data.malls);
+      setPagination({
+        page: response.data.data.pagination.page,
+        limit: response.data.data.pagination.limit,
+        total: response.data.data.pagination.total
+      });
     } catch (error) {
       message.error('获取商场列表失败');
     } finally {
@@ -153,7 +183,7 @@ const MallManagement: React.FC = () => {
     try {
       await mallApi.deleteMall(id);
       message.success('删除成功');
-      fetchMalls();
+      fetchMalls(pagination.page, pagination.limit);
     } catch (error) {
       message.error('删除失败');
     }
@@ -169,10 +199,27 @@ const MallManagement: React.FC = () => {
         message.success('创建成功');
       }
       setModalVisible(false);
-      fetchMalls();
+      fetchMalls(1, pagination.limit);
     } catch (error) {
       message.error(editingMall ? '更新失败' : '创建失败');
     }
+  };
+
+  // 搜索处理函数
+  const handleSearch = () => {
+    fetchMalls(1, pagination.limit);
+  };
+
+  // 重置筛选条件
+  const resetFilters = () => {
+    setMallFilters({
+      search: '',
+      provinceId: undefined,
+      cityId: undefined,
+      districtId: undefined
+    });
+    setCities([]);
+    setDistricts([]);
   };
 
   const columns = [
@@ -270,17 +317,116 @@ const MallManagement: React.FC = () => {
       </Row>
 
       <Card>
+        {/* 添加查询区域 */}
+        <Card size="small" style={{ marginBottom: 16, backgroundColor: '#fafafa' }}>
+          <Row gutter={16} align="middle">
+            <Col span={6}>
+              <Input
+                placeholder="搜索商场名称"
+                value={mallFilters.search}
+                onChange={(e) => setMallFilters({ ...mallFilters, search: e.target.value })}
+                prefix={<SearchOutlined />}
+                allowClear
+                size="small"
+              />
+            </Col>
+            <Col span={4}>
+              <Select
+                placeholder="选择省份"
+                value={mallFilters.provinceId}
+                onChange={(value) => {
+                  setMallFilters({ ...mallFilters, provinceId: value, cityId: undefined, districtId: undefined });
+                  if (value) {
+                    fetchCities(value);
+                  } else {
+                    setCities([]);
+                    setDistricts([]);
+                  }
+                }}
+                allowClear
+                size="small"
+                style={{ width: '100%' }}
+              >
+                {provinces.map(province => (
+                  <Option key={province._id} value={province._id}>
+                    {province.name}
+                  </Option>
+                ))}
+              </Select>
+            </Col>
+            <Col span={4}>
+              <Select
+                placeholder="选择城市"
+                value={mallFilters.cityId}
+                onChange={(value) => {
+                  setMallFilters({ ...mallFilters, cityId: value, districtId: undefined });
+                  if (value) {
+                    fetchDistricts(value);
+                  } else {
+                    setDistricts([]);
+                  }
+                }}
+                allowClear
+                size="small"
+                style={{ width: '100%' }}
+                disabled={!mallFilters.provinceId}
+              >
+                {cities.map(city => (
+                  <Option key={city._id} value={city._id}>
+                    {city.name}
+                  </Option>
+                ))}
+              </Select>
+            </Col>
+            <Col span={4}>
+              <Select
+                placeholder="选择区县"
+                value={mallFilters.districtId}
+                onChange={(value) => setMallFilters({ ...mallFilters, districtId: value })}
+                allowClear
+                size="small"
+                style={{ width: '100%' }}
+                disabled={!mallFilters.cityId}
+              >
+                {districts.map(district => (
+                  <Option key={district._id} value={district._id}>
+                    {district.name}
+                  </Option>
+                ))}
+              </Select>
+            </Col>
+            <Col span={6}>
+              <Space>
+                <Button type="primary" size="small" onClick={handleSearch}>
+                  搜索
+                </Button>
+                <Button size="small" onClick={resetFilters}>
+                  重置
+                </Button>
+              </Space>
+            </Col>
+          </Row>
+        </Card>
+
         <Table
           columns={columns}
           dataSource={malls}
           rowKey="_id"
           loading={loading}
           pagination={{
-            pageSize: 10,
+            current: pagination.page,
+            pageSize: pagination.limit,
+            total: pagination.total,
             showSizeChanger: true,
             showQuickJumper: true,
             showTotal: (total, range) =>
               `第 ${range[0]}-${range[1]} 条/共 ${total} 条`,
+            onChange: (page, pageSize) => {
+              fetchMalls(page, pageSize || pagination.limit);
+            },
+            onShowSizeChange: (current, size) => {
+              fetchMalls(1, size);
+            }
           }}
         />
       </Card>
@@ -481,4 +627,4 @@ const MallManagement: React.FC = () => {
   );
 };
 
-export default MallManagement; 
+export default MallManagement;

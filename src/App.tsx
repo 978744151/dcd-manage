@@ -11,8 +11,10 @@ import CityManagement from './pages/CityManagement';
 import DistrictManagement from './pages/DistrictManagement';
 import BrandManagement from './pages/BrandManagement';
 import MallManagement from './pages/MallManagement';
+import MallBrandManagement from './pages/MallBrandManagement';
 import UserManagement from './pages/UserManagement';
 import MapData from './pages/MapData';
+import DictionaryManagement from './pages/DictionaryManagement';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import './App.css';
 
@@ -46,7 +48,9 @@ const AppRoutes: React.FC = () => {
         <Route path="districts" element={<DistrictManagement />} />
         <Route path="brands" element={<BrandManagement />} />
         <Route path="malls" element={<MallManagement />} />
+        <Route path="mall-brands" element={<MallBrandManagement />} />
         <Route path="users" element={<UserManagement />} />
+        <Route path="dictionaries" element={<DictionaryManagement />} />
       </Route>
     </Routes>
   );

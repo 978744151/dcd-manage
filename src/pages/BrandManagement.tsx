@@ -20,7 +20,7 @@ import {
   Radio,
   Image
 } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, ShopOutlined, SearchOutlined } from '@ant-design/icons'; import { brandApi, provinceApi, cityApi, districtApi, brandStoreApi, mallApi } from '../services/api';
+import { PlusOutlined, EditOutlined, DeleteOutlined, ShopOutlined, SearchOutlined } from '@ant-design/icons'; import { brandApi, provinceApi, cityApi, districtApi, brandStoreApi, mallApi, dictionaryApi } from '../services/api';
 import { Tree } from 'antd';
 import RegionSelector from '../components/RegionSelector';
 import ImageUpload from '../components/ImageUpload'; // 添加导入
@@ -52,6 +52,7 @@ interface Brand {
   contactPhone: string;
   contactEmail: string;
   isActive: boolean;
+  store: number
 }
 
 interface Mall {
@@ -113,6 +114,20 @@ const BrandManagement: React.FC = () => {
   const [editingBrand, setEditingBrand] = useState<Brand | null>(null);
   const [form] = Form.useForm();
 
+  // 添加品牌搜索和筛选状态
+  const [brandFilters, setBrandFilters] = useState({
+    search: '',
+    provinceId: undefined as string | undefined,
+    cityId: undefined as string | undefined,
+    districtId: undefined as string | undefined
+  });
+  const [filteredBrands, setFilteredBrands] = useState<Brand[]>([]);
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 20,
+    total: 0
+  });
+
   // 门店管理相关状态
   const [storeDrawerVisible, setStoreDrawerVisible] = useState(false);
   const [currentBrand, setCurrentBrand] = useState<Brand | null>(null);
@@ -125,6 +140,7 @@ const BrandManagement: React.FC = () => {
   const [storeCities, setStoreCities] = useState<any[]>([]);
   const [storeDistricts, setStoreDistricts] = useState<any[]>([]);
   const [messageApi, contextHolder] = message.useMessage();
+  const [brandCategories, setBrandCategories] = useState<any[]>([]);
 
   // 添加门店查询相关状态
   const [storeFilters, setStoreFilters] = useState({
@@ -136,14 +152,22 @@ const BrandManagement: React.FC = () => {
   const [filteredBrandStores, setFilteredBrandStores] = useState<BrandStore[]>([]);
 
   useEffect(() => {
-    fetchBrands();
+    fetchBrands(1, 20);
     fetchProvinces();
+    fetchBrandCategories();
   }, []);
+
+  // 当brandFilters变化时重新获取数据
+  useEffect(() => {
+    fetchBrands(1, pagination.pageSize);
+  }, [brandFilters]);
 
   // 添加门店过滤逻辑
   useEffect(() => {
     filterStores();
   }, [brandStores, storeFilters]);
+
+
 
   const filterStores = () => {
     let filtered = [...brandStores];
@@ -206,13 +230,57 @@ const BrandManagement: React.FC = () => {
       search: ''
     });
   };
-  const fetchBrands = async () => {
+
+  // 处理品牌搜索变化
+  const handleBrandSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setBrandFilters(prev => ({
+      ...prev,
+      search: e.target.value
+    }));
+  };
+
+  // 处理品牌区域变化
+  const handleBrandRegionChange = (value: any) => {
+    setBrandFilters(prev => ({
+      ...prev,
+      ...value
+    }));
+  };
+
+  // 重置品牌筛选
+  const resetBrandFilters = () => {
+    setBrandFilters({
+      search: '',
+      provinceId: undefined,
+      cityId: undefined,
+      districtId: undefined
+    });
+  };
+
+  const handleSearch = () => {
+    fetchBrands(1, pagination.pageSize);
+  };
+  const fetchBrands = async (page = 1, limit = 20) => {
     try {
       setLoading(true);
-      const response = await brandApi.getBrands();
+      const params = {
+        page,
+        limit,
+        search: brandFilters.search,
+        provinceId: brandFilters.provinceId,
+        cityId: brandFilters.cityId,
+        districtId: brandFilters.districtId
+      };
+      const response = await brandApi.getBrands(params);
       setBrands(response.data.data.brands);
+      // 设置分页信息
+      setPagination({
+        current: response.data.data.pagination.page,
+        pageSize: response.data.data.pagination.limit,
+        total: response.data.data.pagination.total
+      });
       // 加载树形
-      const treeResp = await brandApi.getBrandTree({ level: 2, brandId: '68a2c8e783192a4c2131ed23', provinceId: '68a282e76e1688af0d5ca7cf' });
+      const treeResp = await brandApi.getBrandTree({ level: 0, provinceId: brandFilters.provinceId });
       const provinces = treeResp.data.data.provinces || [];
       const nodes = provinces.map((p: any) => ({
         key: p._id,
@@ -279,6 +347,21 @@ const BrandManagement: React.FC = () => {
     }
   };
 
+  const fetchBrandCategories = async () => {
+    try {
+      const response = await dictionaryApi.getDictionaries({
+        page: 1,
+        limit: 20,
+        type: 'brand_category'
+      });
+      if (response.data.success) {
+        setBrandCategories(response.data.data.dictionaries);
+      }
+    } catch (error) {
+      message.error('获取品牌分类失败');
+    }
+  };
+
   const handleProvinceChange = (provinceId: string) => {
     form.setFieldsValue({ city: undefined, district: undefined });
     if (provinceId) {
@@ -325,7 +408,7 @@ const BrandManagement: React.FC = () => {
     try {
       await brandApi.deleteBrand(id);
       message.success('删除成功');
-      fetchBrands();
+      fetchBrands(pagination.current, pagination.pageSize);
     } catch (error) {
       message.error('删除失败');
     }
@@ -341,7 +424,7 @@ const BrandManagement: React.FC = () => {
         message.success('创建成功');
       }
       setModalVisible(false);
-      fetchBrands();
+      fetchBrands(pagination.current, pagination.pageSize);
     } catch (error) {
       message.error(editingBrand ? '更新失败' : '创建失败');
     }
@@ -528,7 +611,7 @@ const BrandManagement: React.FC = () => {
     }
   };
 
-  const columns = [
+  const columns: any = [
     {
       title: 'Logo',
       dataIndex: 'logo',
@@ -574,8 +657,8 @@ const BrandManagement: React.FC = () => {
     },
     {
       title: '分类',
-      dataIndex: 'category',
-      key: 'category',
+      dataIndex: 'categoryStr',
+      key: 'categoryStr',
     },
     {
       title: '门店数量',
@@ -612,7 +695,9 @@ const BrandManagement: React.FC = () => {
     },
     {
       title: '操作',
+      fixed: 'right',
       key: 'action',
+      width: 320,
       render: (_: any, record: Brand) => (
         <Space size="middle">
           <Button
@@ -662,23 +747,94 @@ const BrandManagement: React.FC = () => {
       </Row>
 
       <Card>
+        {/* 添加品牌搜索和筛选区域 */}
+        <Card size="small" style={{ marginBottom: 16, backgroundColor: '#fafafa' }}>
+          <Row gutter={16} align="middle">
+            <Col span={8}>
+              <Input
+                placeholder="搜索品牌名称、代码或描述"
+                value={brandFilters.search}
+                onChange={handleBrandSearchChange}
+                prefix={<SearchOutlined />}
+                allowClear
+                size="small"
+              />
+            </Col>
+            <Col span={12}>
+              <RegionSelector
+                value={{
+                  provinceId: brandFilters.provinceId,
+                  cityId: brandFilters.cityId,
+                  districtId: brandFilters.districtId
+                }}
+                onChange={handleBrandRegionChange}
+                size="small"
+              />
+            </Col>
+            <Col span={4}>
+              <Space>
+                <Button type="primary" size="small" onClick={handleSearch}>
+                  搜索
+                </Button>
+                <Button size="small" onClick={resetBrandFilters}>
+                  重置筛选
+                </Button>
+              </Space>
+            </Col>
+          </Row>
+        </Card>
+
         <Title level={4}>品牌分布（省-市-区-商场-品牌）</Title>
-        <div style={{ maxHeight: 400, overflow: 'auto', border: '1px solid #f0f0f0', padding: 12, marginBottom: 16 }}>
-          <Tree treeData={treeData} defaultExpandAll />
+        <div style={{ display: 'flex', gap: 16, height: 600 }}>
+          {/* 左侧树形结构 */}
+          <div style={{
+            flex: '0 0 300px',
+            border: '1px solid #f0f0f0',
+            borderRadius: 6,
+            overflow: 'hidden'
+          }}>
+            <div style={{
+              padding: '12px 16px',
+              backgroundColor: '#fafafa',
+              borderBottom: '1px solid #f0f0f0',
+              fontWeight: 500
+            }}>
+              品牌分布树
+            </div>
+            <div style={{
+              height: 'calc(100% - 49px)',
+              overflow: 'auto',
+              padding: 12
+            }}>
+              <Tree treeData={treeData} defaultExpandAll />
+            </div>
+          </div>
+
+          {/* 右侧表格 */}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <Table
+              columns={columns}
+              dataSource={brands}
+              rowKey="_id"
+              loading={loading}
+              pagination={{
+                current: pagination.current,
+                pageSize: pagination.pageSize,
+                total: pagination.total,
+                showSizeChanger: true,
+                showQuickJumper: true,
+                showTotal: (total, range) => `第 ${range[0]}-${range[1]} 条/共 ${total} 条`,
+                onChange: (page, pageSize) => {
+                  fetchBrands(page, pageSize);
+                },
+                onShowSizeChange: (current, size) => {
+                  fetchBrands(1, size);
+                }
+              }}
+              scroll={{ x: 1200, y: 500 }}
+            />
+          </div>
         </div>
-        <Table
-          columns={columns}
-          dataSource={brands}
-          rowKey="_id"
-          loading={loading}
-          pagination={{
-            pageSize: 10,
-            showSizeChanger: true,
-            showQuickJumper: true,
-            showTotal: (total, range) =>
-              `第 ${range[0]}-${range[1]} 条/共 ${total} 条`,
-          }}
-        />
       </Card>
 
       <Modal
@@ -720,7 +876,18 @@ const BrandManagement: React.FC = () => {
                 name="category"
                 label="品牌分类"
               >
-                <Input placeholder="请输入品牌分类" />
+                <Select
+                  placeholder="请选择品牌分类"
+                  showSearch
+                  optionFilterProp="label"
+                  allowClear
+                >
+                  {brandCategories.map(category => (
+                    <Option key={category._id} value={category.value} label={category.label}>
+                      {category.label}
+                    </Option>
+                  ))}
+                </Select>
               </Form.Item>
             </Col>
 
@@ -790,7 +957,7 @@ const BrandManagement: React.FC = () => {
           </Row>
 
           <Row gutter={16}>
-            <Col span={12}>
+            <Col span={8}>
               <Form.Item
                 name="contactPhone"
                 label="联系电话"
@@ -798,12 +965,20 @@ const BrandManagement: React.FC = () => {
                 <Input placeholder="请输入联系电话" />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col span={8}>
               <Form.Item
                 name="contactEmail"
                 label="联系邮箱"
               >
                 <Input placeholder="请输入联系邮箱" />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item
+                name="score"
+                label="分值"
+              >
+                <InputNumber placeholder="请输入分值" />
               </Form.Item>
             </Col>
           </Row>
@@ -815,6 +990,7 @@ const BrandManagement: React.FC = () => {
             <Input placeholder="请输入详细地址" />
 
           </Form.Item>
+
 
           <Form.Item
             name="logo"
@@ -829,17 +1005,29 @@ const BrandManagement: React.FC = () => {
           >
             <TextArea rows={3} placeholder="请输入品牌描述" />
           </Form.Item>
+          <Row gutter={16}>
+            <Col span={12}>
+              {editingBrand && (
+                <Form.Item
+                  name="isActive"
+                  label="状态"
+                  valuePropName="checked"
+                  initialValue={true}
+                >
+                  <Switch />
+                </Form.Item>
+              )}
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                name="sort"
+                label="排序"
+              >
+                <InputNumber placeholder="请输入排序" />
+              </Form.Item>
+            </Col>
+          </Row>
 
-          {editingBrand && (
-            <Form.Item
-              name="isActive"
-              label="状态"
-              valuePropName="checked"
-              initialValue={true}
-            >
-              <Switch />
-            </Form.Item>
-          )}
 
           <Form.Item>
             <Space>
@@ -974,6 +1162,7 @@ const BrandManagement: React.FC = () => {
             {
               title: '操作',
               key: 'action',
+              fixed: 'right',
               render: (_: any, record: BrandStore) => (
                 <Space>
                   <Button
@@ -1001,7 +1190,7 @@ const BrandManagement: React.FC = () => {
           rowKey="_id"
           loading={storeLoading}
           pagination={{
-            pageSize: 10,
+            pageSize: 20,
             showSizeChanger: true,
             showQuickJumper: true,
             showTotal: (total, range) =>

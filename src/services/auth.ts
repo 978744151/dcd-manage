@@ -6,7 +6,7 @@ const API_BASE_URL = (import.meta as any).env?.VITE_API_URL || '/api';
 
 // 创建axios实例
 const api = axios.create({
-  baseURL: 'http://8.155.53.210:3001/api' || API_BASE_URL,
+  baseURL:  API_BASE_URL,
   timeout: 10000,
 });
 
