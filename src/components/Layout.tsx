@@ -12,6 +12,7 @@ import {
   LogoutOutlined,
   SettingOutlined,
   BookOutlined,
+  BarChartOutlined,
 } from '@ant-design/icons';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
@@ -71,6 +72,11 @@ const Layout: React.FC = () => {
       key: '/dictionaries',
       icon: <BankOutlined />,
       label: '字典管理',
+    },
+    {
+      key: '/comparison',
+      icon: <BarChartOutlined />,
+      label: '商场城市对比',
     },
     {
       key: '/users',

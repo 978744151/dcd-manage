@@ -666,6 +666,11 @@ const BrandManagement: React.FC = () => {
       key: 'storeCount',
     },
     {
+      title: '评分',
+      dataIndex: 'score',
+      key: 'score',
+    },
+    {
       title: '省份',
       dataIndex: ['province', 'name'],
       key: 'province',

@@ -101,7 +101,7 @@ export const statisticsApi = {
 export const dictionaryApi = {
   // 获取字典列表
   getDictionaries: (params?: any) => api.get('/admin/dictionaries', { params }),
-  // 获取字典类型列表
+  // 获取字典类型
   getDictionaryTypes: () => api.get('/admin/dictionaries/types'),
   // 创建字典
   createDictionary: (data: any) => api.post('/admin/dictionaries', data),
@@ -109,8 +109,15 @@ export const dictionaryApi = {
   updateDictionary: (id: string, data: any) => api.put(`/admin/dictionaries/${id}`, data),
   // 删除字典
   deleteDictionary: (id: string) => api.delete(`/admin/dictionaries/${id}`),
-  // 批量排序
+  // 字典排序
   sortDictionaries: (data: any) => api.put('/admin/dictionaries/sort', data),
-  // 前端查询字典
+  // 查询字典
   queryDictionaries: (params?: any) => api.get('/map/dictionaries', { params }),
+};
+
+// 对比相关API
+export const comparisonApi = {
+  // 商场/城市对比
+  compare: (data: { type: 'mall' | 'city'; ids: string[]; brandIds?: string[] }) => 
+    api.post('/map/comparison', data),
 };
