@@ -121,3 +121,21 @@ export const comparisonApi = {
   compare: (data: { type: 'mall' | 'city'; ids: string[]; brandIds?: string[] }) => 
     api.post('/map/comparison', data),
 };
+
+// 举报相关API
+export const reportApi = {
+  // 获取举报列表（分页与筛选）
+  getReports: (params?: {
+    page?: number;
+    limit?: number;
+    status?: 'pending' | 'in_review' | 'resolved' | 'rejected';
+    targetType?: 'blog' | 'comment' | 'user' | 'mall' | 'brand' | 'brandStore';
+    reporterIp?: string;
+    startDate?: string;
+    endDate?: string;
+    search?: string;
+  }) => api.get('/report', { params }),
+  // 更新举报状态（pending 未处理 / resolved 已处理）
+  updateStatus: (id: string, status: 'pending' | 'resolved') => 
+    api.put(`/report/${id}/status`, { status }),
+};

@@ -119,7 +119,8 @@ const BrandManagement: React.FC = () => {
     search: '',
     provinceId: undefined as string | undefined,
     cityId: undefined as string | undefined,
-    districtId: undefined as string | undefined
+    districtId: undefined as string | undefined,
+    category: undefined as string | undefined
   });
   const [filteredBrands, setFilteredBrands] = useState<Brand[]>([]);
   const [pagination, setPagination] = useState({
@@ -239,6 +240,14 @@ const BrandManagement: React.FC = () => {
     }));
   };
 
+  // 处理品牌分类变化
+  const handleBrandCategoryChange = (value: string) => {
+    setBrandFilters(prev => ({
+      ...prev,
+      category: value
+    }));
+  };
+
   // 处理品牌区域变化
   const handleBrandRegionChange = (value: any) => {
     setBrandFilters(prev => ({
@@ -253,7 +262,8 @@ const BrandManagement: React.FC = () => {
       search: '',
       provinceId: undefined,
       cityId: undefined,
-      districtId: undefined
+      districtId: undefined,
+      category: undefined
     });
   };
 
@@ -269,7 +279,8 @@ const BrandManagement: React.FC = () => {
         search: brandFilters.search,
         provinceId: brandFilters.provinceId,
         cityId: brandFilters.cityId,
-        districtId: brandFilters.districtId
+        districtId: brandFilters.districtId,
+        category: brandFilters.category
       };
       const response = await brandApi.getBrands(params);
       setBrands(response.data.data.brands);
@@ -755,7 +766,7 @@ const BrandManagement: React.FC = () => {
         {/* 添加品牌搜索和筛选区域 */}
         <Card size="small" style={{ marginBottom: 16, backgroundColor: '#fafafa' }}>
           <Row gutter={16} align="middle">
-            <Col span={8}>
+            <Col span={6}>
               <Input
                 placeholder="搜索品牌名称、代码或描述"
                 value={brandFilters.search}
@@ -765,7 +776,23 @@ const BrandManagement: React.FC = () => {
                 size="small"
               />
             </Col>
-            <Col span={12}>
+            <Col span={6}>
+              <Select
+                placeholder="选择品牌分类"
+                value={brandFilters.category}
+                onChange={handleBrandCategoryChange}
+                allowClear
+                style={{ width: '100%' }}
+                size="small"
+              >
+                {brandCategories.map(category => (
+                  <Option key={category.value} value={category.value}>
+                    {category.label}
+                  </Option>
+                ))}
+              </Select>
+            </Col>
+            <Col span={8}>
               <RegionSelector
                 value={{
                   provinceId: brandFilters.provinceId,

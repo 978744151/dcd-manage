@@ -16,6 +16,9 @@ import UserManagement from './pages/UserManagement';
 import MapData from './pages/MapData';
 import DictionaryManagement from './pages/DictionaryManagement';
 import ComparisonPage from './pages/ComparisonPage';
+import CommentList from './pages/CommentList';
+import BlogManagement from './pages/BlogManagement';
+import ReportList from './pages/ReportList';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import './App.css';
 
@@ -53,6 +56,9 @@ const AppRoutes: React.FC = () => {
         <Route path="users" element={<UserManagement />} />
         <Route path="dictionaries" element={<DictionaryManagement />} />
         <Route path="comparison" element={<ComparisonPage />} />
+        <Route path="comments" element={<CommentList />} />
+        <Route path="blogs" element={<BlogManagement />} />
+        <Route path="reports" element={<ReportList />} />
       </Route>
     </Routes>
   );

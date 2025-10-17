@@ -13,6 +13,7 @@ import {
   SettingOutlined,
   BookOutlined,
   BarChartOutlined,
+  WarningOutlined,
 } from '@ant-design/icons';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
@@ -82,6 +83,21 @@ const Layout: React.FC = () => {
       key: '/users',
       icon: <UserOutlined />,
       label: '用户管理',
+    },
+    {
+      key: '/comments',
+      icon: <BookOutlined />,
+      label: '评论管理',
+    },
+    {
+      key: '/blogs',
+      icon: <BookOutlined />,
+      label: '博客管理',
+    },
+    {
+      key: '/reports',
+      icon: <WarningOutlined />,
+      label: '举报列表',
     },
   ];
 

@@ -7,7 +7,7 @@ const API_BASE_URL = (import.meta as any).env?.VITE_API_URL || '/api';
 // 创建axios实例
 const api = axios.create({
   baseURL:  API_BASE_URL,
-  timeout: 10000,
+  timeout: 30000,
 });
 
 // 请求拦截器
