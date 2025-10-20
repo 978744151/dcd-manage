@@ -124,7 +124,7 @@ const ReportList: React.FC = () => {
     { title: '目标类型', dataIndex: 'targetType', key: 'targetType', width: 120 },
     { title: 'ID', dataIndex: 'targetId', key: 'targetId', width: 220 },
     { title: '博客Id', dataIndex: 'blogId', key: 'blogId', width: 120 },
-    { title: '原因类型', dataIndex: 'reasonType', key: 'reasonType', width: 120 },
+    { title: '原因类型', dataIndex: 'reasonTypeStr', key: 'reasonTypeStr', width: 120 },
     { title: '描述', dataIndex: 'description', key: 'description', ellipsis: true },
     { title: '联系方式', dataIndex: 'contact', key: 'contact', width: 180 },
     {

@@ -46,9 +46,9 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
 
         try {
             const formData = new FormData();
-            formData.append('image', file as File);
+            formData.append('file', file as File);
 
-            const response = await fetch('/api/upload/image', {
+            const response = await fetch(import.meta.env.VITE_API_URL + '/upload/image', {
                 method: 'POST',
                 body: formData,
                 headers: {
@@ -61,7 +61,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
             }
 
             const result = await response.json();
-            const url = result.data.fullUrl;
+            const url = result.data.url;
             setFullUrl(result.data.url);
             setImageUrl(url);
             onChange?.(url);
@@ -80,7 +80,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
         if (!imageUrl) return;
 
         try {
-            const response = await fetch(`/api/upload/delete`, {
+            const response = await fetch(import.meta.env.VITE_API_URL + '/upload/delete', {
                 method: 'post',
                 headers: {
                     'Content-Type': 'application/json',
@@ -94,11 +94,14 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
                 onChange?.(undefined);
                 message.success('图片删除成功!');
             } else {
+                setImageUrl(undefined);
+                onChange?.(undefined);
                 message.error('图片删除失败!');
             }
         } catch (error) {
-            console.error('Delete error:', error);
-            message.error('图片删除失败!');
+            // console.error('Delete error:', error);
+            // message.error('图片删除失败!');
+
         }
     };
 

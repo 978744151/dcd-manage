@@ -120,7 +120,8 @@ const BrandManagement: React.FC = () => {
     provinceId: undefined as string | undefined,
     cityId: undefined as string | undefined,
     districtId: undefined as string | undefined,
-    category: undefined as string | undefined
+    category: undefined as string | undefined,
+    status: undefined as string | undefined
   });
   const [filteredBrands, setFilteredBrands] = useState<Brand[]>([]);
   const [pagination, setPagination] = useState({
@@ -154,7 +155,7 @@ const BrandManagement: React.FC = () => {
 
   useEffect(() => {
     fetchBrands(1, pagination.pageSize);
-    // fetchProvinces(); // 移除，让RegionSelector组件自己管理省份数据加载
+    fetchProvinces(); // 移除，让RegionSelector组件自己管理省份数据加载
     fetchBrandCategories();
   }, []);
 
@@ -256,6 +257,26 @@ const BrandManagement: React.FC = () => {
     }));
   };
 
+  // 处理品牌状态变更
+  const handleBrandStatusChange = (value: string) => {
+    setBrandFilters(prev => ({
+      ...prev,
+      status: value || undefined
+    }));
+  };
+
+  // 处理品牌状态更新
+  const handleUpdateBrandStatus = async (brandId: string, newStatus: string) => {
+    try {
+      await brandApi.updateBrandStatus(brandId, newStatus);
+      message.success('状态更新成功');
+      fetchBrands(); // 重新获取品牌列表
+    } catch (error) {
+      message.error('状态更新失败');
+      console.error('更新品牌状态失败:', error);
+    }
+  };
+
   // 重置品牌筛选
   const resetBrandFilters = () => {
     setBrandFilters({
@@ -263,7 +284,8 @@ const BrandManagement: React.FC = () => {
       provinceId: undefined,
       cityId: undefined,
       districtId: undefined,
-      category: undefined
+      category: undefined,
+      status: undefined
     });
   };
 
@@ -280,7 +302,8 @@ const BrandManagement: React.FC = () => {
         provinceId: brandFilters.provinceId,
         cityId: brandFilters.cityId,
         districtId: brandFilters.districtId,
-        category: brandFilters.category
+        category: brandFilters.category,
+        status: brandFilters.status
       };
       const response = await brandApi.getBrands(params);
       setBrands(response.data.data.brands);
@@ -703,10 +726,19 @@ const BrandManagement: React.FC = () => {
     },
     {
       title: '状态',
-      dataIndex: 'isActive',
-      key: 'isActive',
-      render: (isActive: boolean) => (
-        <Switch checked={isActive} disabled />
+      dataIndex: 'status',
+      key: 'status',
+      render: (status: string, record: Brand) => (
+        <Select
+          value={status}
+          style={{ width: 150 }}
+          onChange={(value) => handleUpdateBrandStatus(record._id, value)}
+          options={[
+            { value: 'pending', label: '待审核' },
+            { value: 'approved', label: '已通过' },
+            { value: 'rejected', label: '已拒绝' }
+          ]}
+        />
       ),
     },
     {
@@ -766,7 +798,7 @@ const BrandManagement: React.FC = () => {
         {/* 添加品牌搜索和筛选区域 */}
         <Card size="small" style={{ marginBottom: 16, backgroundColor: '#fafafa' }}>
           <Row gutter={16} align="middle">
-            <Col span={6}>
+            <Col span={5}>
               <Input
                 placeholder="搜索品牌名称、代码或描述"
                 value={brandFilters.search}
@@ -776,7 +808,7 @@ const BrandManagement: React.FC = () => {
                 size="small"
               />
             </Col>
-            <Col span={6}>
+            <Col span={4}>
               <Select
                 placeholder="选择品牌分类"
                 value={brandFilters.category}
@@ -792,7 +824,21 @@ const BrandManagement: React.FC = () => {
                 ))}
               </Select>
             </Col>
-            <Col span={8}>
+            <Col span={4}>
+              <Select
+                placeholder="选择状态"
+                value={brandFilters.status}
+                onChange={handleBrandStatusChange}
+                allowClear
+                style={{ width: '100%' }}
+                size="small"
+              >
+                <Option value="pending">待审核</Option>
+                <Option value="approved">已通过</Option>
+                <Option value="rejected">已拒绝</Option>
+              </Select>
+            </Col>
+            <Col span={7}>
               <RegionSelector
                 value={{
                   provinceId: brandFilters.provinceId,

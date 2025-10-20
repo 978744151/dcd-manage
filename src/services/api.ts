@@ -50,6 +50,8 @@ export const brandApi = {
   createBrand: (data: any) => api.post('/admin/brands', data),
   // 更新品牌
   updateBrand: (id: string, data: any) => api.put(`/admin/brands/${id}`, data),
+  // 更新品牌状态
+  updateBrandStatus: (id: string, status: string) => api.post('/admin/brands-status', { id, status }),
   // 删除品牌
   deleteBrand: (id: string) => api.delete(`/admin/brands/${id}`),
 };
@@ -95,6 +97,28 @@ export const statisticsApi = {
   getNationalData: () => api.get('/map/national'),
   // 获取统计数据
   getStatistics: (params?: any) => api.get('/map/statistics', { params }),
+};
+
+// 用户反馈相关API
+export const feedbackApi = {
+  // 创建反馈
+  createFeedback: (data: any) => api.post('/feedback', data),
+  // 获取用户反馈列表
+  getUserFeedback: (params?: any) => api.get('/feedback/user', { params }),
+  // 获取所有反馈列表（管理员）
+  getAllFeedback: (params?: any) => api.get('/feedback', { params }),
+  // 获取反馈详情
+  getFeedback: (id: string) => api.get(`/feedback/${id}`),
+  // 更新反馈状态（管理员）
+  updateFeedbackStatus: (id: string, status: string) => api.put(`/feedback/${id}/status`, { status }),
+  // 管理员回复反馈
+  replyFeedback: (id: string, reply: string) => api.put(`/feedback/${id}/reply`, { reply }),
+  // 用户评分
+  rateFeedback: (id: string, rating: number) => api.put(`/feedback/${id}/rating`, { rating }),
+  // 删除反馈（管理员）
+  deleteFeedback: (id: string) => api.delete(`/feedback/${id}`),
+  // 批量标记为已读（管理员）
+  markAsRead: (ids: string[]) => api.put('/feedback/mark-read', { ids }),
 };
 
 // 字典相关API

@@ -19,6 +19,7 @@ import ComparisonPage from './pages/ComparisonPage';
 import CommentList from './pages/CommentList';
 import BlogManagement from './pages/BlogManagement';
 import ReportList from './pages/ReportList';
+import FeedbackManagement from './pages/FeedbackManagement';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import './App.css';
 
@@ -59,6 +60,7 @@ const AppRoutes: React.FC = () => {
         <Route path="comments" element={<CommentList />} />
         <Route path="blogs" element={<BlogManagement />} />
         <Route path="reports" element={<ReportList />} />
+        <Route path="feedback" element={<FeedbackManagement />} />
       </Route>
     </Routes>
   );
