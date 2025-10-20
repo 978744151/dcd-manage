@@ -153,14 +153,14 @@ const BrandManagement: React.FC = () => {
   const [filteredBrandStores, setFilteredBrandStores] = useState<BrandStore[]>([]);
 
   useEffect(() => {
-    fetchBrands(1, 20);
-    fetchProvinces();
+    fetchBrands(1, pagination.pageSize);
+    // fetchProvinces(); // 移除，让RegionSelector组件自己管理省份数据加载
     fetchBrandCategories();
   }, []);
 
   // 当brandFilters变化时重新获取数据
   useEffect(() => {
-    fetchBrands(1, pagination.pageSize);
+    // fetchBrands(1, pagination.pageSize);
   }, [brandFilters]);
 
   // 添加门店过滤逻辑
@@ -291,39 +291,39 @@ const BrandManagement: React.FC = () => {
         total: response.data.data.pagination.total
       });
       // 加载树形
-      const treeResp = await brandApi.getBrandTree({ level: 0, provinceId: brandFilters.provinceId });
-      const provinces = treeResp.data.data.provinces || [];
-      const nodes = provinces.map((p: any) => ({
-        key: p._id,
-        title: `${p.name}`,
-        children: (p.cities || []).map((c: any) => ({
-          key: c._id,
-          title: c.name,
-          children: [
-            ...(c.districts || []).map((d: any) => ({
-              key: d._id || `${c._id}-nodistrict`,
-              title: d.name || '（无区县）',
-              children: (d.malls || []).map((m: any) => ({
-                key: m._id,
-                title: `${m.name}`,
-                children: (m.brands || []).map((b: any) => ({
-                  key: `${m._id}-${b._id}`,
-                  title: b.name
-                }))
-              }))
-            })),
-            ...(c.malls || []).map((m: any) => ({
-              key: m._id,
-              title: `${m.name}`,
-              children: (m.brands || []).map((b: any) => ({
-                key: `${m._id}-${b._id}`,
-                title: b.name
-              }))
-            }))
-          ]
-        }))
-      }));
-      setTreeData(nodes);
+      // const treeResp = await brandApi.getBrandTree({ level: 0, provinceId: brandFilters.provinceId });
+      // const provinces = treeResp.data.data.provinces || [];
+      // const nodes = provinces.map((p: any) => ({
+      //   key: p._id,
+      //   title: `${p.name}`,
+      //   children: (p.cities || []).map((c: any) => ({
+      //     key: c._id,
+      //     title: c.name,
+      //     children: [
+      //       ...(c.districts || []).map((d: any) => ({
+      //         key: d._id || `${c._id}-nodistrict`,
+      //         title: d.name || '（无区县）',
+      //         children: (d.malls || []).map((m: any) => ({
+      //           key: m._id,
+      //           title: `${m.name}`,
+      //           children: (m.brands || []).map((b: any) => ({
+      //             key: `${m._id}-${b._id}`,
+      //             title: b.name
+      //           }))
+      //         }))
+      //       })),
+      //       ...(c.malls || []).map((m: any) => ({
+      //         key: m._id,
+      //         title: `${m.name}`,
+      //         children: (m.brands || []).map((b: any) => ({
+      //           key: `${m._id}-${b._id}`,
+      //           title: b.name
+      //         }))
+      //       }))
+      //     ]
+      //   }))
+      // }));
+      // setTreeData(nodes);
     } catch (error) {
       message.error('获取品牌列表失败');
     } finally {
@@ -818,8 +818,7 @@ const BrandManagement: React.FC = () => {
 
         <Title level={4}>品牌分布（省-市-区-商场-品牌）</Title>
         <div style={{ display: 'flex', gap: 16, height: 600 }}>
-          {/* 左侧树形结构 */}
-          <div style={{
+          {/* <div style={{
             flex: '0 0 300px',
             border: '1px solid #f0f0f0',
             borderRadius: 6,
@@ -840,7 +839,7 @@ const BrandManagement: React.FC = () => {
             }}>
               <Tree treeData={treeData} defaultExpandAll />
             </div>
-          </div>
+          </div> */}
 
           {/* 右侧表格 */}
           <div style={{ flex: 1, minWidth: 0 }}>

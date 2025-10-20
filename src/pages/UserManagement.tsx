@@ -33,6 +33,7 @@ const UserManagement: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    console.log(1234)
     fetchUsers();
   }, []);
 
@@ -96,14 +97,14 @@ const UserManagement: React.FC = () => {
       title: '最后登录',
       dataIndex: 'lastLogin',
       key: 'lastLogin',
-      render: (lastLogin: string) => 
+      render: (lastLogin: string) =>
         lastLogin ? moment(lastLogin).format('YYYY-MM-DD HH:mm:ss') : '从未登录',
     },
     {
       title: '创建时间',
       dataIndex: 'createdAt',
       key: 'createdAt',
-      render: (createdAt: string) => 
+      render: (createdAt: string) =>
         moment(createdAt).format('YYYY-MM-DD HH:mm:ss'),
     },
   ];

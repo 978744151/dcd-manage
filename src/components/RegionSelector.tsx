@@ -53,9 +53,10 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
         district: false
     });
 
-    useEffect(() => {
-        fetchProvinces();
-    }, []);
+    // 移除默认加载省份数据的useEffect
+    // useEffect(() => {
+    //     fetchProvinces();
+    // }, []);
 
     useEffect(() => {
         if (value.provinceId) {
@@ -110,6 +111,13 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
         }
     };
 
+    // 处理省份下拉框点击事件，懒加载省份数据
+    const handleProvinceDropdownVisibleChange = (open: boolean) => {
+        if (open && provinces.length === 0) {
+            fetchProvinces();
+        }
+    };
+
     const handleProvinceChange = (provinceId: string) => {
         const newValue = {
             provinceId,
@@ -143,6 +151,7 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({
                     placeholder={placeholder.province}
                     value={value.provinceId}
                     onChange={handleProvinceChange}
+                    onDropdownVisibleChange={handleProvinceDropdownVisibleChange}
                     allowClear={allowClear}
                     size={size}
                     disabled={disabled}
