@@ -2,8 +2,11 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
 import zhCN from 'antd/locale/zh_CN';
+import Homepage from './pages/Homepage';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import UserAgreement from './pages/UserAgreement';
 import Dashboard from './pages/Dashboard';
 import Layout from './components/Layout';
 import ProvinceManagement from './pages/ProvinceManagement';
@@ -38,14 +41,17 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 const AppRoutes: React.FC = () => {
   return (
     <Routes>
+      <Route path="/" element={<Homepage />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route path="/" element={
+      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+      <Route path="/user-agreement" element={<UserAgreement />} />
+      <Route path="/admin" element={
         <ProtectedRoute>
           <Layout />
         </ProtectedRoute>
       }>
-        <Route index element={<Navigate to="/dashboard" replace />} />
+        <Route index element={<Navigate to="/admin/dashboard" replace />} />
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="map-data" element={<MapData />} />
         <Route path="provinces" element={<ProvinceManagement />} />

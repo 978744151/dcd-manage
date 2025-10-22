@@ -31,77 +31,77 @@ const Layout: React.FC = () => {
 
   const menuItems = [
     {
-      key: '/dashboard',
+      key: '/admin/dashboard',
       icon: <DashboardOutlined />,
       label: '仪表盘',
     },
     {
-      key: '/map-data',
+      key: '/admin/map-data',
       icon: <GlobalOutlined />,
       label: '地图数据',
     },
     {
-      key: '/provinces',
+      key: '/admin/provinces',
       icon: <EnvironmentOutlined />,
       label: '省份管理',
     },
     {
-      key: '/cities',
+      key: '/admin/cities',
       icon: <BankOutlined />,
       label: '城市管理',
     },
     {
-      key: '/districts',
+      key: '/admin/districts',
       icon: <EnvironmentOutlined />,
       label: '区县管理',
     },
     {
-      key: '/brands',
+      key: '/admin/brands',
       icon: <ShopOutlined />,
       label: '品牌管理',
     },
     {
-      key: '/malls',
+      key: '/admin/malls',
       icon: <BankOutlined />,
       label: '商场管理',
     },
     {
-      key: '/mall-brands',
+      key: '/admin/mall-brands',
       icon: <ShopOutlined />,
       label: '商场品牌管理',
     },
     {
-      key: '/dictionaries',
+      key: '/admin/dictionaries',
       icon: <BankOutlined />,
       label: '字典管理',
     },
     {
-      key: '/comparison',
+      key: '/admin/comparison',
       icon: <BarChartOutlined />,
       label: '商场城市对比',
     },
     {
-      key: '/users',
+      key: '/admin/users',
       icon: <UserOutlined />,
       label: '用户管理',
     },
     {
-      key: '/comments',
+      key: '/admin/comments',
       icon: <BookOutlined />,
       label: '评论管理',
     },
     {
-      key: '/blogs',
+      key: '/admin/blogs',
       icon: <BookOutlined />,
       label: '博客管理',
     },
     {
-      key: '/reports',
+      key: '/admin/reports',
       icon: <WarningOutlined />,
       label: '举报列表',
     },
     {
-      key: '/feedback',
+      key: '/admin/feedback',
       icon: <MessageOutlined />,
       label: '用户反馈',
     },
@@ -112,6 +112,7 @@ const Layout: React.FC = () => {
       key: 'profile',
       icon: <UserOutlined />,
       label: '个人资料',
+      onClick: () => navigate('/admin/profile'),
     },
     {
       key: 'settings',

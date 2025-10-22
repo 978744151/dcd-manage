@@ -98,11 +98,11 @@ const ReportList: React.FC = () => {
   const handleGoToComments = async (item: any) => {
     try {
       if (item.targetType === 'blog') {
-        navigate(`/comments?blogId=${item.targetId}`);
+        navigate(`/admin/comments?blogId=${item.targetId}`);
         return;
       }
       if (item.targetType === 'comment') {
-        navigate(`/comments?blogId=${item.blogId}&commentId=${item.targetId}`);
+        navigate(`/admin/comments?blogId=${item.blogId}&commentId=${item.targetId}`);
       }
     } catch (error: any) {
       message.error(error?.response?.data?.message || '跳转失败');

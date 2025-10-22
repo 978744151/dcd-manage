@@ -11,18 +11,21 @@ import {
   Row,
   Col,
   Tag,
+  Input,
 } from 'antd';
-import { EditOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import { userApi } from '../services/api';
+import UserFormModal from '../components/UserFormModal';
 import moment from 'moment';
 
 const { Title } = Typography;
+const { Search } = Input;
 
 interface User {
   _id: string;
   username: string;
   email: string;
-  role: string;
+  role: 'admin' | 'user';
   isActive: boolean;
   lastLogin: string;
   createdAt: string;
@@ -31,16 +34,19 @@ interface User {
 const UserManagement: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [searchText, setSearchText] = useState('');
 
   useEffect(() => {
-    console.log(1234)
     fetchUsers();
   }, []);
 
-  const fetchUsers = async () => {
+  const fetchUsers = async (search?: string) => {
     try {
       setLoading(true);
-      const response = await userApi.getUsers();
+      const params = search ? { search } : {};
+      const response = await userApi.getUsers(params);
       setUsers(response.data.data.users);
     } catch (error) {
       message.error('获取用户列表失败');
@@ -49,14 +55,48 @@ const UserManagement: React.FC = () => {
     }
   };
 
+  const handleSearch = (value: string) => {
+    setSearchText(value);
+    fetchUsers(value);
+  };
+
   const handleStatusChange = async (userId: string, isActive: boolean) => {
     try {
       await userApi.updateUserStatus(userId, isActive);
       message.success('状态更新成功');
-      fetchUsers();
+      fetchUsers(searchText);
     } catch (error) {
       message.error('状态更新失败');
     }
+  };
+
+  const handleAdd = () => {
+    setEditingUser(null);
+    setModalVisible(true);
+  };
+
+  const handleEdit = (user: User) => {
+    setEditingUser(user);
+    setModalVisible(true);
+  };
+
+  const handleDelete = async (userId: string) => {
+    try {
+      await userApi.deleteUser(userId);
+      message.success('用户删除成功');
+      fetchUsers(searchText);
+    } catch (error) {
+      message.error('删除用户失败');
+    }
+  };
+
+  const handleModalSuccess = () => {
+    fetchUsers(searchText);
+  };
+
+  const handleModalCancel = () => {
+    setModalVisible(false);
+    setEditingUser(null);
   };
 
   const columns = [
@@ -107,6 +147,39 @@ const UserManagement: React.FC = () => {
       render: (createdAt: string) =>
         moment(createdAt).format('YYYY-MM-DD HH:mm:ss'),
     },
+    {
+      title: '操作',
+      key: 'action',
+      width: 200,
+      render: (_, record: User) => (
+        <Space size="small">
+          <Button
+            type="link"
+            size="small"
+            icon={<EditOutlined />}
+            onClick={() => handleEdit(record)}
+          >
+            编辑
+          </Button>
+          <Popconfirm
+            title="确定要删除这个用户吗？"
+            description="删除后将无法恢复，请谨慎操作。"
+            onConfirm={() => handleDelete(record._id)}
+            okText="确定"
+            cancelText="取消"
+          >
+            <Button
+              type="link"
+              size="small"
+              danger
+              icon={<DeleteOutlined />}
+            >
+              删除
+            </Button>
+          </Popconfirm>
+        </Space>
+      ),
+    },
   ];
 
   return (
@@ -114,6 +187,25 @@ const UserManagement: React.FC = () => {
       <Row justify="space-between" align="middle" style={{ marginBottom: 16 }}>
         <Col>
           <Title level={2}>用户管理</Title>
+        </Col>
+        <Col>
+          <Space>
+            <Search
+              placeholder="搜索用户名或邮箱"
+              allowClear
+              enterButton={<SearchOutlined />}
+              size="middle"
+              onSearch={handleSearch}
+              style={{ width: 250 }}
+            />
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={handleAdd}
+            >
+              新增用户
+            </Button>
+          </Space>
         </Col>
       </Row>
 
@@ -132,8 +224,15 @@ const UserManagement: React.FC = () => {
           }}
         />
       </Card>
+
+      <UserFormModal
+        visible={modalVisible}
+        onCancel={handleModalCancel}
+        onSuccess={handleModalSuccess}
+        editingUser={editingUser}
+      />
     </div>
   );
 };
 
-export default UserManagement; 
+export default UserManagement;

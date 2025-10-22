@@ -213,7 +213,7 @@ const BlogManagement = () => {
 
     // 跳转到评论管理页面
     const handleCommentManagement = (blog: BlogType) => {
-        navigate(`/comments?blogId=${blog._id}&blogTitle=${encodeURIComponent(blog.title)}`);
+        navigate(`/admin/comments?blogId=${blog._id}&blogTitle=${encodeURIComponent(blog.title)}`);
     };
 
     // 表格列定义

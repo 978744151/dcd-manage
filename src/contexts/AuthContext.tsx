@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { message } from 'antd';
-import { login as loginApi, register as registerApi, getCurrentUser } from '../services/auth';
+import { login as loginApi, register as registerApi, getCurrentUser, emailLogin as emailLoginApi } from '../services/auth';
 
 interface User {
   id: string;
@@ -13,6 +13,7 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<boolean>;
+  emailLogin: (email: string, code: string) => Promise<boolean>;
   register: (username: string, email: string, password: string, role?: string) => Promise<boolean>;
   logout: () => void;
   loading: boolean;
@@ -70,6 +71,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const emailLogin = async (email: string, code: string): Promise<boolean> => {
+    try {
+      const { data } = await emailLoginApi(email, code);
+
+      const { token, user: user } = data.data;
+
+      localStorage.setItem('token', token);
+      setUser(user);
+      message.success('登录成功');
+      return true;
+    } catch (error: any) {
+      message.error(error.response?.data?.message || '验证码登录失败');
+      return false;
+    }
+  };
+
   const register = async (username: string, email: string, password: string, role: string = 'user'): Promise<boolean> => {
     try {
       const response = await registerApi(username, email, password, role);
@@ -94,6 +111,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     user,
     isAuthenticated: !!localStorage.getItem('token'),
     login,
+    emailLogin,
     register,
     logout,
     loading

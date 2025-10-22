@@ -78,6 +78,16 @@ export const login = (email: string, password: string) => {
   return api.post('/auth/login', { email, password });
 };
 
+// 发送邮箱验证码
+export const sendVerificationCode = (email: string, type: string = 'login') => {
+  return api.post('/auth/send-code', { email, type });
+};
+
+// 邮箱验证码登录
+export const emailLogin = (email: string, code: string) => {
+  return api.post('/auth/email-login', { email, code });
+};
+
 // 注册
 export const register = (username: string, email: string, password: string, role: string = 'user') => {
   return api.post('/auth/register', { username, email, password, role });

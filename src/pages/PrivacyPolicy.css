@@ -1,0 +1,255 @@
+.privacy-policy {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 0;
+}
+
+.privacy-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.back-button {
+  color: #1890ff;
+  font-size: 18px;
+  padding: 8px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.back-button:hover {
+  background: rgba(24, 144, 255, 0.1);
+  color: #40a9ff;
+}
+
+.header-title {
+  margin: 0 !important;
+  color: #262626;
+  font-weight: 600;
+}
+
+.privacy-content {
+  padding: 24px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.privacy-card {
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  border: none;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(20px);
+}
+
+.privacy-card .ant-card-body {
+  padding: 32px;
+}
+
+.policy-title {
+  color: #1890ff !important;
+  text-align: center;
+  margin-bottom: 8px !important;
+  font-weight: 700;
+  background: linear-gradient(135deg, #1890ff, #722ed1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.update-date {
+  display: block;
+  text-align: center;
+  font-size: 14px;
+  color: #8c8c8c;
+  margin-bottom: 24px;
+}
+
+.section-title {
+  color: #262626 !important;
+  margin-bottom: 16px !important;
+  font-weight: 600;
+  position: relative;
+  padding-left: 12px;
+}
+
+.section-title::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 20px;
+  background: linear-gradient(135deg, #1890ff, #722ed1);
+  border-radius: 2px;
+}
+
+.ant-typography p {
+  margin-bottom: 12px;
+  line-height: 1.8;
+  color: #595959;
+}
+
+.ant-typography strong {
+  color: #262626;
+  font-weight: 600;
+}
+
+.ant-alert {
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, #fff7e6, #fff2e8);
+  box-shadow: 0 2px 8px rgba(250, 173, 20, 0.15);
+}
+
+.ant-alert-warning {
+  border-left: 4px solid #faad14;
+}
+
+.ant-divider {
+  border-color: rgba(0, 0, 0, 0.06);
+  margin: 32px 0;
+}
+
+.agreement-actions {
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  text-align: center;
+}
+
+.agree-button {
+  background: linear-gradient(135deg, #1890ff, #722ed1);
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  height: 44px;
+  padding: 0 32px;
+  box-shadow: 0 4px 16px rgba(24, 144, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.agree-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(24, 144, 255, 0.4);
+  background: linear-gradient(135deg, #40a9ff, #9254de);
+}
+
+.ant-btn {
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.ant-btn:not(.ant-btn-primary) {
+  border-color: #d9d9d9;
+  color: #595959;
+}
+
+.ant-btn:not(.ant-btn-primary):hover {
+  border-color: #1890ff;
+  color: #1890ff;
+  transform: translateY(-1px);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .privacy-content {
+    padding: 16px;
+  }
+  
+  .privacy-card .ant-card-body {
+    padding: 24px 20px;
+  }
+  
+  .privacy-header {
+    padding: 12px 16px;
+  }
+  
+  .policy-title {
+    font-size: 24px !important;
+  }
+  
+  .section-title {
+    font-size: 16px !important;
+  }
+  
+  .agreement-actions .ant-btn {
+    width: 100%;
+    margin-bottom: 12px;
+  }
+  
+  .agreement-actions .ant-space {
+    width: 100%;
+  }
+  
+  .agreement-actions .ant-space-item {
+    width: 100%;
+  }
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* 动画效果 */
+.privacy-card {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.section-title {
+  animation: slideInLeft 0.5s ease-out;
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* 文本选择样式 */
+::selection {
+  background: rgba(24, 144, 255, 0.2);
+  color: #262626;
+}

@@ -73,10 +73,20 @@ export const mallApi = {
 // 用户相关API
 export const userApi = {
   // 获取用户列表
-  getUsers: (params?: any) => api.get('/admin/users', { params }),
+  getUsers: (params?: any) => api.get('/user/list', { params }),
+  // 获取单个用户信息
+  getUser: (id: string) => api.get(`/user/users/${id}`),
+  // 创建用户
+  createUser: (data: { username: string; email: string; password: string; role?: 'admin' | 'user' }) => 
+    api.post('/user', data),
+  // 更新用户信息
+  updateUser: (id: string, data: { username?: string; email?: string; role?: 'admin' | 'user'; isActive?: boolean }) => 
+    api.put(`/user/${id}`, data),
   // 更新用户状态
   updateUserStatus: (id: string, isActive: boolean) => 
-    api.put(`/admin/users/${id}/status`, { isActive }),
+    api.put(`/user/${id}/status`, { isActive }),
+  // 删除用户
+  deleteUser: (id: string) => api.delete(`/user/${id}`),
 };
 
 // 品牌门店相关API
