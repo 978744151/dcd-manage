@@ -179,7 +179,7 @@ const FeedbackManagement: React.FC = () => {
         <div>
           <div style={{ fontWeight: 500 }}>{text}</div>
           <div style={{ fontSize: '12px', color: '#666' }}>
-            {record.user.username} ({record.user.email})
+            {record.user?.username || '-'} ({record.user?.email || '-'})
           </div>
         </div>
       ),
@@ -421,7 +421,7 @@ const FeedbackManagement: React.FC = () => {
                 <p><strong>状态：</strong><Tag color={getStatusColor(selectedFeedback.status)}>{selectedFeedback.status}</Tag></p>
               </Col>
               <Col span={12}>
-                <p><strong>用户：</strong>{selectedFeedback.user.username} ({selectedFeedback.user.email})</p>
+                <p><strong>用户：</strong>{selectedFeedback.user?.username || '-'} ({selectedFeedback.user?.email || '-'})</p>
                 <p><strong>联系方式：</strong>{selectedFeedback.contact || '-'}</p>
                 <p><strong>相关页面：</strong>{selectedFeedback.relatedPage || '-'}</p>
                 <p><strong>创建时间：</strong>{moment(selectedFeedback.createdAt).format('YYYY-MM-DD HH:mm:ss')}</p>

@@ -125,7 +125,7 @@ const UserAgreement: React.FC = () => {
             </div>
 
             {/* 同意按钮 */}
-            <div className="agreement-actions">
+            {/* <div className="agreement-actions">
               <Space size="middle">
                 <Button size="large" onClick={handleGoBack}>
                   返回
@@ -139,7 +139,7 @@ const UserAgreement: React.FC = () => {
                   同意并继续
                 </Button>
               </Space>
-            </div>
+            </div> */}
           </Space>
         </Card>
       </div>

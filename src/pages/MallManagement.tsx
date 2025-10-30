@@ -49,6 +49,7 @@ interface Mall {
   parkingSpaces: number;
   openingHours: string;
   isActive: boolean;
+  isOla: boolean;
 }
 
 const MallManagement: React.FC = () => {
@@ -265,13 +266,21 @@ const MallManagement: React.FC = () => {
       key: 'contactPhone',
     },
     {
-      title: '状态',
-      dataIndex: 'isActive',
-      key: 'isActive',
-      render: (isActive: boolean) => (
-        <Switch checked={isActive} disabled />
+      title: '奥莱商城',
+      dataIndex: 'isOla',
+      key: 'isOla',
+      render: (isOla: boolean) => (
+        <Switch checked={isOla} disabled />
       ),
     },
+    // {
+    //   title: '状态',
+    //   dataIndex: 'isActive',
+    //   key: 'isActive',
+    //   render: (isActive: boolean) => (
+    //     <Switch checked={isActive} disabled />
+    //   ),
+    // },
     {
       title: '操作',
       key: 'action',
@@ -494,24 +503,35 @@ const MallManagement: React.FC = () => {
                   placeholder="请选择所属省份"
                   optionFilterProp="label"
                   onChange={handleProvinceChange}
-                >
-                  {provinces.map(province => (
-                    <Option key={province._id} value={province._id}>
-                      {province.name}
-                    </Option>
-                  ))}
-                </Select>
+                  showSearch
+                  filterOption={(input, option) =>
+                    option?.label?.toString().toLowerCase().includes(input.toLowerCase())
+                  }
+                  options={provinces.map(province => ({
+                    label: province.name,
+                    value: province._id
+                  }))}
+                />
               </Form.Item>
             </Col>
             <Col span={8}>
               <Form.Item
                 name="city"
                 label="所属城市"
+
                 rules={[{ required: true, message: '请选择所属城市' }]}
               >
                 <Select
                   placeholder="请选择所属城市"
                   onChange={handleCityChange}
+                  filterOption={(input, option) =>
+                    option?.label?.toString().toLowerCase().includes(input.toLowerCase())
+                  }
+                  showSearch
+                  options={cities.map(city => ({
+                    label: city.name,
+                    value: city._id
+                  }))}
                 >
                   {cities.map(city => (
                     <Option key={city._id} value={city._id}>
@@ -526,7 +546,16 @@ const MallManagement: React.FC = () => {
                 name="district"
                 label="所属区县"
               >
-                <Select placeholder="请选择所属区县">
+                <Select placeholder="请选择所属区县"
+                  filterOption={(input, option) =>
+                    option?.label?.toString().toLowerCase().includes(input.toLowerCase())
+                  }
+                  showSearch
+                  options={districts.map(district => ({
+                    label: district.name,
+                    value: district._id
+                  }))}
+                >
                   {districts.map(district => (
                     <Option key={district._id} value={district._id}>
                       {district.name}
@@ -601,11 +630,36 @@ const MallManagement: React.FC = () => {
           </Form.Item>
 
           {editingMall && (
+            <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item
+                  name="isActive"
+                  label="状态"
+                  valuePropName="checked"
+                  initialValue={true}
+                >
+                  <Switch />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  name="isOla"
+                  label="是否奥莱商城"
+                  valuePropName="checked"
+                  initialValue={false}
+                >
+                  <Switch />
+                </Form.Item>
+              </Col>
+            </Row>
+          )}
+
+          {!editingMall && (
             <Form.Item
-              name="isActive"
-              label="状态"
+              name="isOla"
+              label="是否奥莱商城"
               valuePropName="checked"
-              initialValue={true}
+              initialValue={false}
             >
               <Switch />
             </Form.Item>
