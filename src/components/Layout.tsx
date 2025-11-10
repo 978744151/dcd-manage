@@ -15,6 +15,7 @@ import {
   BarChartOutlined,
   WarningOutlined,
   MessageOutlined,
+  RollbackOutlined,
 } from '@ant-design/icons';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
@@ -104,6 +105,11 @@ const Layout: React.FC = () => {
       key: '/admin/feedback',
       icon: <MessageOutlined />,
       label: '用户反馈',
+    },
+    {
+      key: '/admin/soft-deleted-brands',
+      icon: <RollbackOutlined />,
+      label: '软删除品牌',
     },
   ];
 

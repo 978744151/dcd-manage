@@ -173,3 +173,18 @@ export const reportApi = {
   updateStatus: (id: string, status: 'pending' | 'resolved') => 
     api.put(`/report/${id}/status`, { status }),
 };
+
+// ...
+
+// 管理端软删除数据API
+export const adminSoftDeletedApi = {
+  // 获取软删除品牌列表
+  getSoftDeletedBrands: (params?: { page?: number; limit?: number; search?: string }) => 
+    api.get('/admin/soft-deleted/brands', { params }),
+  // 恢复单个品牌
+  restoreBrand: (id: string) => api.post(`/admin/restore/brand/${id}`),
+  // 永久删除单个品牌
+  permanentDeleteBrand: (id: string) => api.delete(`/admin/permanent/brand/${id}`),
+  // 批量恢复品牌
+  restoreBrandsBatch: (ids: string[]) => api.post('/admin/restore-batch/brand', { ids }),
+};

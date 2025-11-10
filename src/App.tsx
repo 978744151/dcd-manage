@@ -23,6 +23,7 @@ import CommentList from './pages/CommentList';
 import BlogManagement from './pages/BlogManagement';
 import ReportList from './pages/ReportList';
 import FeedbackManagement from './pages/FeedbackManagement';
+import SoftDeletedBrands from './pages/SoftDeletedBrands';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import './App.css';
 
@@ -67,6 +68,7 @@ const AppRoutes: React.FC = () => {
         <Route path="blogs" element={<BlogManagement />} />
         <Route path="reports" element={<ReportList />} />
         <Route path="feedback" element={<FeedbackManagement />} />
+        <Route path="soft-deleted-brands" element={<SoftDeletedBrands />} />
       </Route>
     </Routes>
   );

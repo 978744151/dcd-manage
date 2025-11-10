@@ -97,7 +97,7 @@ export const BlogService = {
 
   // 删除博客
   async deleteBlog(id: string): Promise<{ success: boolean; message: string }> {
-    const response = await api.delete(`/blogs/${id}`);
+    const response = await api.delete(`/blogs/delete/${id}`);
     return response.data;
   },
 
